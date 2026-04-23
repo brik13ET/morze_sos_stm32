@@ -1,0 +1,97 @@
+{
+	"folders": [
+		{
+			"name": "Project",
+			"path": "."
+		}
+	],
+	"settings": {
+		"terminal.integrated.defaultProfile.windows": "Command Prompt",
+		"terminal.integrated.env.windows": {
+			"PATH": "D:\\Users\\user0\\Documents\\0426-stm32\\xpack-openocd-0.12.0-7\\bin;D:\\Users\\user0\\Documents\\0426-stm32\\gcc-arm-none-eabi-10.3-2021.10\\bin;D:\\Users\\user0\\Documents\\0426-stm32\\make-3.81-bin\\bin;D:\\Users\\user0\\Documents\\0426-stm32\\ctags;${env:PATH}"
+		},
+		"ctags-companion.documentSelector": {
+			"scheme": "file"
+		},
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"name": "Attach to gdbserver",
+				"type": "gdb",
+				"request": "attach",
+				"executable": "build.elf",
+				"target": "127.0.0.1:3333",
+				"remote": true,
+				"cwd": "${workspaceRoot}",
+				"valuesFormatting": "parseText",
+				"gdbpath": "arm-none-eabi-gdb",
+				"env": {
+					"PATH": "D:\\Users\\user0\\Documents\\0426-stm32\\xpack-openocd-0.12.0-7\\bin;D:\\Users\\user0\\Documents\\0426-stm32\\gcc-arm-none-eabi-10.3-2021.10\\bin;D:\\Users\\user0\\Documents\\0426-stm32\\make-3.81-bin\\bin;D:\\Users\\user0\\Documents\\0426-stm32\\ctags;${env:PATH}"
+				},
+				"preLaunchTask": "Run"
+			}
+		],
+		"compounds": []
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "Clean",
+				"type": "shell",
+				"command": "make",
+				"args": ["clean"],
+				"presentation": {
+					"reveal": "always"
+				},
+				"group": "build"
+			},
+			{
+				"label": "Build",
+				"type": "shell",
+				"command": "make",
+				"args": [],
+				"group": {
+					"kind": "build",
+					"isDefault": true
+				},
+				"presentation": {
+					"reveal": "always"
+				},
+			},
+			{
+				"label": "Run",
+				"type": "shell",
+				"dependsOn": "Build",
+				"isBackground": false,
+				"command": "openocd",
+				"args": [
+					"-f",
+					"interface\\stlink.cfg",
+					"-f",
+					"target\\stm32f1x.cfg",
+					"-c",
+					"gdb_port 3333"
+				],
+			},
+			{
+				"label": "Flash",
+				"type": "shell",
+				"dependsOn": "Build",
+				"isBackground": true,
+				"command": "openocd",
+				"args": [
+					"-f",
+					"interface\\stlink.cfg",
+					"-f",
+					"target\\stm32f1x.cfg",
+					"-c",
+					"program build.elf verify exit"
+
+				],
+			}
+		]
+	}
+}
