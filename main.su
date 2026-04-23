@@ -1,8 +1,0 @@
-main.c:3:6:sleep_iter	24	static
-main.c:8:6:pwm_up	24	static
-main.c:26:6:pwm_down	24	static
-main.c:43:6:morze_dot	8	static
-main.c:50:6:morze_dash	16	static
-main.c:61:6:morze_pause	16	static
-main.c:68:6:morze_longpause	16	static
-main.c:74:5:main	24	static
