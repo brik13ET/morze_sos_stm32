@@ -1,4 +1,12 @@
-#include "stm32f103xb.h"    // Header file that includes the CMSIS definitions for the STM32
+#include "stm32f103xb.h"
+
+void sleep_iter(uint32_t t);
+void pwm_up();
+void pwm_down();
+void morze_dot();
+void morze_dash();
+void morze_pause();
+void morze_longpause();
 
 void sleep_iter(uint32_t t)
 {
@@ -20,6 +28,7 @@ void pwm_up()
 		fill_on = fill_on + fill_dir;
 		fill_off = fill_off - fill_dir;
 	}
+	GPIOC->ODR |= GPIO_ODR_ODR13;
 }
 
 
@@ -38,6 +47,7 @@ void pwm_down()
 		fill_on = fill_on + fill_dir;
 		fill_off = fill_off - fill_dir;
 	}
+	GPIOC->ODR &= ~GPIO_ODR_ODR13;
 }
 
 void morze_dot()
@@ -49,24 +59,21 @@ void morze_dot()
 
 void morze_dash()
 {
-	
 	pwm_down();
-	for (int i = 0; i < 160; i ++)
-	sleep_iter(4000);
+	morze_pause();
 	pwm_up();
 }
 
 void morze_pause()
 {
-	GPIOC->ODR |= GPIO_ODR_ODR13;
 	for (int i = 0; i < 160; i ++)
 	sleep_iter(4000);
 }
 
 void morze_longpause()
 {
-	for (int i = 0; i < 320; i ++)
-		sleep_iter(4000);
+	morze_pause();
+	morze_pause();
 }
 
 int main( void )
@@ -75,10 +82,6 @@ int main( void )
 
 	GPIOC->CRH &= ~GPIO_CRH_CNF13_Msk;    // Clear both CNF13[1:0] bits
 	GPIOC->CRH |= ( GPIO_CRH_MODE13_0 );  // Set MODE13[0]-bit.
-
-	uint32_t freq = 15;
-	uint32_t fill_on = 2000, fill_off=2000;
-	int32_t fill_dir = -50;
 
 	while( 1 )                            // Endless loop
 	{
